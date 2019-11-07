@@ -1,19 +1,20 @@
-
 data "azurerm_client_config" "current" {}
+data "azurerm_subscription" "current" {}
 
 locals {
   subscription_abbr = "${substr(data.azurerm_client_config.current.subscription_id,-4,-1)}"
   service_name = "${substr(terraform.workspace, 5, -1)}"
+  descriptor = "${data.azurerm_client_config.current.subscription_id == "a811808f-245c-4cce-ab8f-e8c842f34715" ? "PRESHARED" : element(split("_", data.azurerm_subscription.current.display_name), 2) }"
 }
 
 data "azurerm_resource_group" "security" {
-  name = "${format("%s_%s_RG_SECURITY", local.subscription_abbr, var.resource_group_map[local.subscription_abbr])}" # <last4digitsSN>_<LOGICALNAME>_RG_SECURITY
+  name = "${format("%s_%s_RG_SECURITY", local.subscription_abbr, local.descriptor)}" # <last4digitsSN>_<LOGICALNAME>_RG_SECURITY
 }
 
 resource "azurerm_network_security_group" "nsg" {
 
   count = "${length(var.functions)}"
-  name = "${format("%s_%s_NSG_%s_%s", local.subscription_abbr, var.network_security_group_map[local.subscription_abbr], local.service_name, var.functions[count.index])}"
+  name = "${format("%s_%s_NSG_%s_%s", local.subscription_abbr, local.descriptor, local.service_name, var.functions[count.index])}"
   location = "${data.azurerm_resource_group.security.location}"
   resource_group_name = "${data.azurerm_resource_group.security.name}"
 
@@ -46,7 +47,7 @@ resource "azurerm_network_security_group" "nsg" {
 resource "azurerm_application_security_group" "asg" {
   count = "${length(var.functions)}"
 
-  name = "${format("%s_%s_ASG_%s_%s", local.subscription_abbr, var.network_security_group_map[local.subscription_abbr], local.service_name, var.functions[count.index])}"
+  name = "${format("%s_%s_ASG_%s_%s", local.subscription_abbr, local.descriptor, local.service_name, var.functions[count.index])}"
   location = "${data.azurerm_resource_group.security.location}"
   resource_group_name = "${data.azurerm_resource_group.security.name}"
 }
