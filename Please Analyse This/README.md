@@ -12,6 +12,7 @@ The 4th parameter will be used as the workspace, and also used to identify for w
 The last parameter will determine how many security groups will be created per service, this needs to be passed in as a list, i.e. ["WAS","WEB"]
 Security groups will be created with the following naming convention in mind:
 
+
 <Last4DigitsSubscriptionId>_<LogicalNameForSubscription>_NSG_<ServiceName>_<Function>
 
 No translation to uppercase or lowercase will be done, so keep that in mind when passing in the variables
