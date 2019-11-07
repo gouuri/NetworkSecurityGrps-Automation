@@ -1,10 +1,10 @@
 Terraform module that will create Network Security Groups in Azure.
 Requires a few environment variables set:
 
-ARM_SUBSCRIPTION_ID
-ARM_CLIENT_ID (optional at this time)
-ARM_CLIENT_SECRET
-SERVICENAME
+ARM_SUBSCRIPTION_ID,
+ARM_CLIENT_ID (optional at this time),
+ARM_CLIENT_SECRET,
+SERVICENAME,
 FUNCTIONS
 
 The first 3 parameters are required to ensure correct authentication and placement of the NSGs
@@ -14,4 +14,4 @@ Security groups will be created with the following naming convention in mind:
 <Last4DigitsSubscriptionId>_<LogicalNameForSubscription>_NSG_<ServiceName>_<Function>
 No translation to uppercase or lowercase will be done, so keep that in mind when passing in the variables
 The wrapper.sh script handles the workspace changes and variable interpolation.
-Note: Unexpected things might happen if the variables aren't set correctly
+ Note: Unexpected things might happen if the variables aren't set correctly
